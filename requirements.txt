@@ -1,0 +1,31 @@
+# Evaluation & Mitigation dependencies
+# (The data generator uses a separate conda environment — see README)
+
+# Core
+together>=1.5.34
+openai>=1.99.2
+
+# Search
+youdotcom
+requests>=2.32.3
+
+# Web content processing
+beautifulsoup4>=4.13.3
+markdownify>=0.11.6
+
+# Data & ML
+numpy
+pandas>=2.3.1
+datasets
+
+# Evaluation
+rich>=13.0.0
+
+# Environment
+python-dotenv>=1.0.1
+
+# HTTP
+httpx>=0.24.0
+
+# SGLang (for local model hosting)
+# Install separately: pip install sglang[all]

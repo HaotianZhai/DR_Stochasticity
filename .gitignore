@@ -1,0 +1,54 @@
+# Data (downloaded by scripts/)
+data/*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+
+# Experiment outputs
+**/results/
+**/outputs/
+**/browsecomp_results/
+**/deepresearch_bench_results/
+**/ablation_outputs/
+**/stochasticity_results*/
+**/*_results/
+
+# Logs
+*.log
+
+# Trajectories and evaluation artifacts
+**/trajectories/
+**/answers/
+**/claims/
+**/atomic_facts/
+**/clustered/
+**/metrics/
+
+# Lock files
+uv.lock
