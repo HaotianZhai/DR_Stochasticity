@@ -816,9 +816,9 @@ class ModularReactAgent(FnCallAgent):
         # Generate budget warning based on remaining trials
         if remaining_trials is not None and max_trials is not None:
             if remaining_trials <= 1:
-                budget_warning = "⚠️ **CRITICAL**: This is your last search attempt! Consider providing your final answer if you have sufficient information."
+                budget_warning = "**CRITICAL**: This is your last search attempt! Consider providing your final answer if you have sufficient information."
             elif remaining_trials <= 2:
-                budget_warning = "⚠️ **Warning**: You are running low on search attempts. Be strategic with your remaining queries."
+                budget_warning = "**Warning**: You are running low on search attempts. Be strategic with your remaining queries."
             elif remaining_trials <= max_trials // 2:
                 budget_warning = "You have used more than half of your search budget."
             else:
