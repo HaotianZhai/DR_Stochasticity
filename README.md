@@ -127,11 +127,16 @@ pip install youdotcom python-dotenv
 
 ### DeepResearch Pipeline
 
-This pipeline uses a ReAct agent with modular temperature control over three stages: summarization, reasoning, and query.
+This pipeline uses a ReAct agent with modular temperature control over three stages: summarization, reasoning, and query. You can run it against a **local SGLang server** or the **Together AI API**.
+
+**Using a local SGLang server:**
 
 ```bash
 conda activate react_infer_env
 cd data_generator/deepresearch
+
+export LLM_BASE_URL="http://localhost:30001/v1"
+export LLM_API_KEY="EMPTY"
 
 python run_multi_react_modular.py \
   --model Qwen/Qwen3-30B-A3B-Instruct-2507 \
@@ -145,6 +150,27 @@ python run_multi_react_modular.py \
   --seed "1,3,5,7,9,11,13,15,17,19" \
   --max_workers 5
 ```
+
+**Using Together AI API:**
+
+```bash
+conda activate react_infer_env
+cd data_generator/deepresearch
+
+export LLM_BASE_URL="https://api.together.xyz/v1"
+export LLM_API_KEY="your-together-api-key"
+
+python run_multi_react_modular.py \
+  --model Qwen/Qwen3-235B-A22B-Instruct-2507-tput \
+  --output ./results \
+  --dataset ../../data/webwalkerqa.json \
+  --temperature 0.0 \
+  --roll_out_count 10 \
+  --seed "1,3,5,7,9,11,13,15,17,19" \
+  --max_workers 5
+```
+
+The agent reads `LLM_BASE_URL` (default: `http://localhost:30000/v1`) and `LLM_API_KEY` (default: `EMPTY`) from environment variables.
 
 **Key arguments:**
 

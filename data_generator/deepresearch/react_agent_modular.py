@@ -19,8 +19,9 @@ from transformers import AutoTokenizer
 from datetime import datetime
 import time
 import asyncio
+import httpx
 
-from together import Together
+from openai import OpenAI
 
 from qwen_agent.agents.fncall_agent import FnCallAgent
 from qwen_agent.llm import BaseChatModel
@@ -267,8 +268,8 @@ class ModularReactAgent(FnCallAgent):
         self.llm_generate_cfg = llm["generate_cfg"]
         self.llm_local_path = llm["model"]
         
-        # Together client (uses TOGETHER_API_KEY env var)
-        self.client = Together()
+        self.llm_base_url = os.getenv("LLM_BASE_URL", "http://localhost:30000/v1")
+        self.client = self._create_openai_client(self.llm_base_url)
         
         # Module-specific configurations (temperature, seed)
         # Defaults: temperature=0, seed=42 for all modules
@@ -297,6 +298,18 @@ class ModularReactAgent(FnCallAgent):
         # Tokenizer for token counting
         self._tokenizer = None
     
+    def _create_openai_client(self, base_url: str) -> OpenAI:
+        api_key = os.getenv("LLM_API_KEY", "EMPTY")
+        try:
+            return OpenAI(api_key=api_key, base_url=base_url)
+        except (PermissionError, OSError) as exc:
+            print(f"Warning: OpenAI client SSL setup failed ({exc}); retrying with verify=False.")
+            return OpenAI(
+                api_key=api_key,
+                base_url=base_url,
+                http_client=httpx.Client(verify=False)
+            )
+
     def _get_tokenizer(self):
         """Lazy-load tokenizer."""
         if self._tokenizer is None:
