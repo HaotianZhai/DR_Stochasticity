@@ -1,4 +1,4 @@
-# Deep Diagnosis: Diagnosing and Mitigating Stochasticity in Deep Research Agents
+# Evaluating Stochasticity in Deep Research Agents
 
 This repository provides the code for paper: Evaluating Stochasticity in Deep Research Agents. It contains three main components:
 
