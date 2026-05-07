@@ -303,7 +303,7 @@ class ModularReactAgent(FnCallAgent):
             try:
                 self._tokenizer = AutoTokenizer.from_pretrained(self.llm_local_path)
             except:
-                self._tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
+                self._tokenizer = AutoTokenizer.from_pretrained("") 
         return self._tokenizer
     
     def _strip_tool_response(self, content: str) -> str:
