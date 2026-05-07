@@ -8,9 +8,6 @@ and performs semantic clustering using a local OpenAI-compatible embedding API.
 Usage:
     python atomic_findings_pipeline.py <path_to_atomic_facts_dir> [--threshold 0.82] [--output results.json]
     python atomic_findings_pipeline.py file1.json file2.json [--threshold 0.82] [--output results.json]
-
-Author: AI Assistant
-Date: November 2025
 """
 
 import json
@@ -28,7 +25,7 @@ from threading import Lock
 # Default configuration for local LLM server
 DEFAULT_LLM_BASE_URL = os.getenv("LLM_BASE_URL", "http://localhost:30000/v1")
 DEFAULT_LLM_MODEL = os.getenv("LLM_MODEL", "Qwen/Qwen3-30B-A3B-Instruct-2507")
-DEFAULT_LLM_API_KEY = os.getenv("LLM_API_KEY", "EMPTY")
+DEFAULT_LLM_API_KEY = os.getenv("TOGETHER_API_KEY", "EMPTY")
 DEFAULT_EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "intfloat/multilingual-e5-large-instruct")
 
 
