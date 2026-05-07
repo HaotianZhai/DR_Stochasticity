@@ -22,9 +22,6 @@ Example:
         answers/ \
         --llm-base-url http://localhost:30000/v1 \
         --model Qwen/Qwen3-30B-A3B-Instruct-2507
-
-Author: AI Assistant
-Date: November 2025
 """
 
 import json
@@ -46,7 +43,7 @@ from urllib.parse import urlparse, parse_qsl, urlencode
 # Default configuration for local LLM server
 DEFAULT_LLM_BASE_URL = os.getenv("LLM_BASE_URL", "http://localhost:30000/v1")
 DEFAULT_LLM_MODEL = os.getenv("LLM_MODEL", "Qwen/Qwen3-30B-A3B-Instruct-2507")
-DEFAULT_LLM_API_KEY = os.getenv("LLM_API_KEY", "EMPTY")
+DEFAULT_LLM_API_KEY = os.getenv("TOGETHER_API_KEY", "EMPTY")
 
 
 def create_openai_client(base_url: str, api_key: str = None) -> OpenAI:
