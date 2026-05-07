@@ -9,8 +9,7 @@ set -e
 # runs and decides what to try next.
 #
 # Usage:
-#   export LLM_API_KEY="your-key"
-#   export LLM_BASE_URL="https://your-provider/v1"
+#   export TOGETHER_API_KEY="your-key"
 #   ./run_mitigation_experiment.sh <experiment_name> [OPTIONS]
 #
 # Options:
@@ -59,11 +58,8 @@ SKIP_INFERENCE=false
 SKIP_EVAL=false
 DRY_RUN=false
 
-if [ -z "$LLM_BASE_URL" ]; then
-    echo "Warning: LLM_BASE_URL not set. Defaulting to http://localhost:30000/v1" >&2
-    export LLM_BASE_URL="http://localhost:30000/v1"
-fi
-export LLM_API_KEY="${LLM_API_KEY:-EMPTY}"
+export LLM_BASE_URL="${LLM_BASE_URL:-https://api.together.xyz/v1}"
+export LLM_API_KEY="${LLM_API_KEY:-${TOGETHER_API_KEY}}"
 export LLM_MODEL="${LLM_MODEL:-${MODEL}}"
 
 # ============================================================================
@@ -119,8 +115,8 @@ ACTUAL_DIR="${EXP_DIR}/${MODEL_DIR_NAME}_modular/${DATASET_NAME}"
 # VALIDATION
 # ============================================================================
 
-if [ -z "$LLM_API_KEY" ] || [ "$LLM_API_KEY" = "EMPTY" ]; then
-    echo "Error: LLM_API_KEY not set. Please export LLM_API_KEY with your API key." >&2
+if [ -z "$TOGETHER_API_KEY" ]; then
+    echo "Error: TOGETHER_API_KEY not set." >&2
     exit 1
 fi
 
