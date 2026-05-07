@@ -35,7 +35,6 @@ This repository provides the code for paper: Evaluating Stochasticity in Deep Re
 - API keys:
   - [You.com API](https://you.com/api) — used as the search engine for data generation
   - [Together AI API](https://www.together.ai/) — used for cloud model inference in mitigation experiments and embeddings
-  - [TOGETHER_API_KEY] — required for the embedding model (`intfloat/multilingual-e5-large-instruct`) used in the evaluation pipeline
 
 ```bash
 # Clone the repository
