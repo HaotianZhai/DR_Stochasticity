@@ -39,8 +39,7 @@ This repository provides the code for paper: Evaluating Stochasticity in Deep Re
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your-org>/deep-diagnosis.git
-cd deep-diagnosis
+masked
 
 # Install dependencies (for evaluation & mitigation)
 pip install -r requirements.txt
@@ -60,7 +59,7 @@ See the [SGLang deterministic inference documentation](https://github.com/sgl-pr
 
 ### Launch the model servers
 
-**Qwen3-4B (GPU 0, port 30000):**
+**Qwen3-4B-Instruct-2507:**
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python -m sglang.launch_server \
@@ -71,7 +70,7 @@ CUDA_VISIBLE_DEVICES=0 python -m sglang.launch_server \
   --host 0.0.0.0
 ```
 
-**Qwen3-30B-A3B (GPU 1, port 30001):**
+**Qwen3-30B-A3B-Instruct-2507:**
 
 ```bash
 CUDA_VISIBLE_DEVICES=1 python -m sglang.launch_server \
@@ -81,8 +80,6 @@ CUDA_VISIBLE_DEVICES=1 python -m sglang.launch_server \
   --port 30001 \
   --host 0.0.0.0
 ```
-
-The `--enable-deterministic-inference` flag combined with `--attention-backend fa3` (FlashAttention 3) ensures fully deterministic outputs, supporting CUDA graphs, chunked prefill, and radix cache. This lets us isolate temperature as the sole source of randomness in our ablation studies.
 
 ---
 
@@ -166,10 +163,6 @@ python run_multi_react_modular.py \
 | `--seed-query` | Base seed for the query module | `42` |
 | `--roll_out_count` | Number of independent rollouts per question | `3` |
 | `--max_workers` | Maximum parallel workers for concurrent inference | `20` |
-| `--top_p` | Top-p (nucleus) sampling parameter | `0.95` |
-| `--presence_penalty` | Presence penalty for generation | `1.1` |
-| `--total_splits` | Split dataset into N chunks (for distributed runs) | `1` |
-| `--worker_split` | Which chunk to process (1-indexed) | `1` |
 
 ### Key Adjustments to the Original DeepResearch Framework
 
@@ -196,15 +189,15 @@ We made the following changes to the original [Alibaba DeepResearch](https://git
 
 The evaluation pipeline measures stochasticity across three dimensions:
 
-- **Answer-level stochasticity** — Are the final answers semantically equivalent across runs? (LLM-as-judge comparison)
-- **Finding-level stochasticity** — How much do the atomic findings differ across runs? (Cosine distance between canonical finding sets)
-- **Citation-level stochasticity** — How consistent is the evidence sourcing? (Set-level citation overlap)
+- **Answer-level stochasticity** — Are the final answers semantically equivalent across runs?
+- **Finding-level stochasticity** — How much do the atomic findings differ across runs?
+- **Citation-level stochasticity** — How consistent is the evidence sourcing?
 
 Additionally, the pipeline computes **accuracy** against ground truth answers.
 
 ### Full Stochasticity Pipeline
 
-The easiest way to run the full evaluation is via the shell script:
+The best way to run the full evaluation is via the shell script:
 
 ```bash
 cd evaluation/scripts
@@ -224,7 +217,7 @@ This runs four steps automatically:
 
 1. **Extract QA Answers** — Extracts the final answer from each trajectory using an LLM.
 2. **Extract Claims & Atomic Facts** — Decomposes research reports into atomic factual claims.
-3. **Cluster Atomic Findings** — Embeds findings (via Together API's `intfloat/multilingual-e5-large-instruct`) and clusters semantically equivalent ones using cosine similarity + LLM verification.
+3. **Cluster Atomic Findings** — Clusters semantically equivalent findings using cosine similarity + LLM verification.
 4. **Calculate Stochasticity Metrics** — Computes answer/finding/citation-level stochasticity scores.
 
 ### Converting DeepResearch JSONL Output
@@ -285,17 +278,6 @@ python evaluation/atomic_findings/calculate_stochasticity.py \
 
 ### Tunable Hyperparameters
 
-#### Data Generation
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `temperature` (per module) | Sampling temperature for each agent module | `0.0` |
-| `seed` | Random seed passed to the model server | `None` |
-| `rollout_count` | Number of independent runs per question | `5` |
-| `max_workers` | Parallel workers for data generation | `1`–`10` |
-
-#### Evaluation
-
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `--threshold` | Cosine similarity threshold for clustering atomic findings | `0.94` |
@@ -317,7 +299,7 @@ Mitigation experiments use the **Together AI API** for cloud-hosted inference (n
 export TOGETHER_API_KEY="your-together-api-key"
 
 # Download the DeepSearchQA dataset
-python scripts/download_deepsearchqa.py --num-instances 25 --output data/deepsearchqa.json
+python scripts/download_deepsearchqa.py --num-instances xx --output data/deepsearchqa.json
 ```
 
 ### Running Mitigation Experiments
@@ -328,40 +310,32 @@ cd mitigation/scripts
 # Baseline (no mitigation, temperature=0.7)
 ./run_mitigation_experiment.sh baseline \
   --temp 0.7 \
-  --rollouts 5 \
-  --seeds "1,24,32,444,50239" \
+  --rollouts 10 \
+  --seeds xx \
   --dataset ../../data/deepsearchqa.json
 
 # Query ensemble mitigation
 ./run_mitigation_experiment.sh query_ensemble \
   --temp 0.7 \
   --use-ensemble \
-  --rollouts 5 \
-  --seeds "1,24,32,444,50239" \
+  --rollouts 10 \
+  --seeds xx \
   --dataset ../../data/deepsearchqa.json
 
 # Structured output mitigation
 ./run_mitigation_experiment.sh structured_output \
   --temp 0.7 \
   --use-structure \
-  --rollouts 5 \
-  --seeds "1,24,32,444,50239" \
+  --rollouts 10 \
+  --seeds xx \
   --dataset ../../data/deepsearchqa.json
 
 # Consistency voting mitigation
 ./run_mitigation_experiment.sh consistency_voting \
   --temp 0.7 \
   --use-consistency \
-  --rollouts 5 \
-  --seeds "1,24,32,444,50239" \
-  --dataset ../../data/deepsearchqa.json
-
-# Per-module temperature ablation
-./run_mitigation_experiment.sh low_query_temp \
-  --temp 0.7 \
-  --temp-query 0.0 \
-  --rollouts 5 \
-  --seeds "1,24,32,444,50239" \
+  --rollouts 10 \
+  --seeds xx \
   --dataset ../../data/deepsearchqa.json
 ```
 
@@ -426,12 +400,7 @@ Each experiment runs inference, evaluates stochasticity, and saves a summary JSO
 
 ## Citation
 
-```bibtex
-@article{deep_diagnosis_2025,
-  title={Deep Diagnosis: Diagnosing and Mitigating Stochasticity in Deep Research Agents},
-  year={2025}
-}
-```
+masked
 
 ---
 
